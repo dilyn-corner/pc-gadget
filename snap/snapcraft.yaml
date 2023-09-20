@@ -5,6 +5,13 @@ base: core22
 summary: Classic PC gadget for generic AMD64 devices
 description: |
     This gadget enables booting generic PC AMD64 with classic Ubuntu
+
+contact: dilyn.corner@canonical.com
+issues: https://github.com/dilyn-corner/pc-gadget/issues
+license: MIT
+source-code: https://github.com/dilyn-corner/pc-gadget
+website: https://dilyn.cc
+
 confinement: strict
 grade: stable
 
