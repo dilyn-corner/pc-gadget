@@ -54,20 +54,20 @@ parts:
         sleep squash4 test true btrfs hfsplus iso9660 part_apple part_msdos    \
         password_pbkdf2 zfs zfscrypt zfsinfo lvm mdraid09 mdraid1x raid5rec raid6rec video"
 
-      cp -f ${CRAFT_STAGE}/usr/lib/shim/shimx64.efi.signed.latest            \
+      cp -f "${CRAFT_STAGE}/usr/lib/shim/shimx64.efi.signed.latest"            \
         shim.efi.signed
-      cp -f ${CRAFT_STAGE}/usr/lib/grub/x86_64-efi-signed/grubx64.efi.signed \
+      cp -f "${CRAFT_STAGE}/usr/lib/grub/x86_64-efi-signed/grubx64.efi.signed" \
         grubx64.efi
 
       dd \
-        if=${CRAFT_STAGE}/usr/lib/grub/i386-pc/boot.img \
+        if="${CRAFT_STAGE}/usr/lib/grub/i386-pc/boot.img" \
         of=pc-boot.img bs=440 count=1
 
       echo -ne '\x90\x90'         | dd of=pc-boot.img seek=102 bs=1 conv=notrunc
       echo -ne '\x01\x08\x00\x00' | dd of=pc-core.img seek=500 bs=1 conv=notrunc
 
       grub-mkimage \
-        -d ${CRAFT_STAGE}/usr/lib/grub/i386-pc/ \
+        -d "${CRAFT_STAGE}/usr/lib/grub/i386-pc/" \
         -O i386-pc -o pc-core.img -p '(,gpt2)/EFI/ubuntu' \
         ${GRUB_LEGACY_MODULES}
 
