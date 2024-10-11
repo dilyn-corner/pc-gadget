@@ -1,12 +1,5 @@
 #!/bin/sh
 
-# This file is included for reference purposes. If MODEL_APIKEY is not set
-# in snapcraft.yaml (as is the default), it is a no-op. For more about how
-# to use this script to connect a device to an IoT App Store, see
-#  - https://ubuntu.com/core/services/guide/serial-vault-overview
-#  - https://ubuntu.com/core/services/guide/connecting-devices
-#  - https://snapcraft.io/docs/gadget-snap#heading--prepare
-
 set -eu
 
 if [ -z "$MODEL_APIKEY" ] ; then

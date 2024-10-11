@@ -1,0 +1,107 @@
+volumes:
+  pc:
+    schema: gpt
+    # bootloader configuration is shipped and managed by snapd
+    bootloader: grub
+    structure:
+      - name: mbr
+        type: mbr
+        size: 440
+        update:
+          edition: 1
+        content:
+          - image: mbr.img
+        # This one should be removed or if we find a way to allow updates
+        # without keeping all partitions
+      - name: BIOS Boot
+        type: 21686148-6449-6E6F-744E-656564454649
+        size: 1M
+        offset: 1M
+      - name: ubuntu-seed
+        role: system-seed
+        filesystem: vfat
+        # UEFI will boot the ESP partition by default first
+        type: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
+        # Size of around two seeds to allow for remodeling
+        size: 7000M
+        update:
+          edition: 1
+        content:
+          - source: grubx64.efi
+            target: EFI/boot/grubx64.efi
+          - source: shim.efi.signed
+            target: EFI/boot/bootx64.efi
+      - name: ubuntu-boot
+        role: system-boot
+        filesystem: ext4
+        type: 0FC63DAF-8483-4772-8E79-3D69D8477DE4
+        # Around 300M would be enough, but keeping as is to allow
+        # remodeling from previous releases
+        size: 750M
+        update:
+          edition: 1
+        content:
+          - source: grubx64.efi
+            target: EFI/boot/grubx64.efi
+      - name: ubuntu-save
+        role: system-save
+        filesystem: ext4
+        type: 0FC63DAF-8483-4772-8E79-3D69D8477DE4
+        # min-size to allow remodeling from previous releases
+        min-size: 16M
+        size: 32M
+      - name: ubuntu-data
+        role: system-data
+        filesystem: ext4
+        type: 0FC63DAF-8483-4772-8E79-3D69D8477DE4
+        # Automatically expands during installation anyways
+        size: 1M
+
+defaults:
+  system:
+    experimental.user-daemons: true
+    experimental.dbus-activation: true
+    refresh.retain: 2
+    service.ssh.listen-address: 127.0.0.1
+    swap.size: 4G
+  ffnH0sJpX3NFAclH777M8BdXIWpo93af:
+    account-name: LANDSCAPE_NAME
+    landscape-url: "https://landscape.canonical.com"
+    auto-register:
+      enabled: true
+      computer-title-pattern: ${model}-${serial}
+      wait-for-serial-as: true
+
+# A lot of interface autoconnections are required
+connections:
+  - plug: LVkazk0JLrL0ivuHRlv3wp3bK1nAgwtN:account-control
+  - plug: LVkazk0JLrL0ivuHRlv3wp3bK1nAgwtN:avahi-control
+    slot: LVkazk0JLrL0ivuHRlv3wp3bK1nAgwtN:avahi-control
+  - plug: LVkazk0JLrL0ivuHRlv3wp3bK1nAgwtN:desktop-launch
+  - plug: LVkazk0JLrL0ivuHRlv3wp3bK1nAgwtN:hardware-observe
+  - plug: LVkazk0JLrL0ivuHRlv3wp3bK1nAgwtN:home
+  - plug: LVkazk0JLrL0ivuHRlv3wp3bK1nAgwtN:hostname-control
+  - plug: LVkazk0JLrL0ivuHRlv3wp3bK1nAgwtN:locale-control
+  - plug: LVkazk0JLrL0ivuHRlv3wp3bK1nAgwtN:login-session-observe
+  - plug: LVkazk0JLrL0ivuHRlv3wp3bK1nAgwtN:login-session-control
+  - plug: LVkazk0JLrL0ivuHRlv3wp3bK1nAgwtN:mount-observe
+  - plug: LVkazk0JLrL0ivuHRlv3wp3bK1nAgwtN:network-control
+  - plug: LVkazk0JLrL0ivuHRlv3wp3bK1nAgwtN:network-observe
+  - plug: LVkazk0JLrL0ivuHRlv3wp3bK1nAgwtN:polkit-agent
+  - plug: LVkazk0JLrL0ivuHRlv3wp3bK1nAgwtN:process-control
+  - plug: LVkazk0JLrL0ivuHRlv3wp3bK1nAgwtN:shutdown
+  - plug: LVkazk0JLrL0ivuHRlv3wp3bK1nAgwtN:snapd-control
+  - plug: LVkazk0JLrL0ivuHRlv3wp3bK1nAgwtN:system-observe
+  - plug: LVkazk0JLrL0ivuHRlv3wp3bK1nAgwtN:shell-config-files
+    slot: system:system-files
+  - plug: LVkazk0JLrL0ivuHRlv3wp3bK1nAgwtN:time-control
+  - plug: LVkazk0JLrL0ivuHRlv3wp3bK1nAgwtN:timeserver-control
+  - plug: LVkazk0JLrL0ivuHRlv3wp3bK1nAgwtN:timezone-control
+  - plug: LVkazk0JLrL0ivuHRlv3wp3bK1nAgwtN:upower-observe
+  - plug: LVkazk0JLrL0ivuHRlv3wp3bK1nAgwtN:network-manager
+    slot: RmBXKl6HO6YOC2DE4G2q1JzWImC04EUy:service
+  - plug: LVkazk0JLrL0ivuHRlv3wp3bK1nAgwtN:bluez
+    slot: JmzJi9kQvHUWddZ32PDJpBRXUpGRxvNS:service
+  - plug: LVkazk0JLrL0ivuHRlv3wp3bK1nAgwtN:bluetooth-control
+  - plug: LVkazk0JLrL0ivuHRlv3wp3bK1nAgwtN:cups-control
+    slot: m1eQacDdXCthEwWQrESei3Zao3d5gfJF:cups-control
