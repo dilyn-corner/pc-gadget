@@ -1,0 +1,62 @@
+name: Regression Test Builds CI
+
+on:
+  schedule:
+    - cron: '0 12 * * 1'
+  workflow_dispatch:
+
+jobs:
+  # Classic builds
+  test_22_classic:
+    name: Test 22-classic build to check for regressions
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: 22-classic
+      - name: Build
+        uses: canonical/action-build@v1
+        with:
+          snapcraft-channel: latest/edge
+
+  # Desktop builds
+  test_24_desktop:
+    name: Test 24-desktop build to check for regressions
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: 24-desktop
+      - name: Build
+        uses: canonical/action-build@v1
+        with:
+          snapcraft-channel: latest/edge
+
+  # Core builds
+  test_22:
+    name: Test 22 build to check for regressions
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: 22
+      - name: Build
+        uses: canonical/action-build@v1
+        with:
+          snapcraft-channel: latest/edge
+
+  test_24:
+    name: Test 24 build to check for regressions
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: 24
+      - name: Build
+        uses: canonical/action-build@v1
+        with:
+          snapcraft-channel: latest/edge

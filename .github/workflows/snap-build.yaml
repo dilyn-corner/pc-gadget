@@ -1,0 +1,142 @@
+name: Snap Builds CI
+
+on:
+  schedule:
+    - cron: '0 12 1 * *'
+  workflow_dispatch:
+
+jobs:
+  # Classic builds
+  build_22_classic:
+    name: Build job for the 22 Classic gadget snap
+    runs-on: ubuntu-22.04
+    outputs:
+      snap-file: ${{ steps.build.outputs.snap }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: 22-classic
+      - name: Prep env
+        run: |
+          sed -i "s/LANDSCAPE_NAME/${{ secrets.LANDSCAPE_NAME }}/"                        gadget.yaml
+          sed -i "s/name: pc/name: ${{ secrets.REGISTERED_NAME }}/"                       snap/snapcraft.yaml
+          sed -i "s/22-classic-APIKEY/${{ secrets.CLASSIC_22_APIKEY }}/"                  snap/snapcraft.yaml
+          sed -i "s/serial-vault-partners.canonical.com/${{ secrets.SERIAL_VAULT_URL }}/" snap/hooks/prepare-device
+      - name: Build
+        uses: canonical/action-build@v1
+        with:
+          build-info: true
+          snapcraft-channel: 7.x/stable
+          ua-token: ${{ secrets.UA_TOKEN }}
+        id: build
+      - name: Publish
+        uses: canonical/action-publish@v1
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_LOGIN }}
+        with:
+          snap: ${{ steps.build.outputs.snap }}
+          release: classic/edge
+          # Uploading may fail because gadgets require review, which is fine
+          continue-on-error: true
+
+  # Desktop builds
+  build_24_desktop:
+    name: Build job for the 24 Core Desktop gadget snap
+    runs-on: ubuntu-24.04
+    outputs:
+      snap-file: ${{ steps.build.outputs.snap }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: 24-desktop
+      - name: Prep env
+        run: |
+          sed -i "s/LANDSCAPE_NAME/${{ secrets.LANDSCAPE_NAME }}/"                        gadget.yaml
+          sed -i "s/name: pc/name: ${{ secrets.REGISTERED_NAME }}/"                       snap/snapcraft.yaml
+          sed -i "s/24-desktop-APIKEY/${{ secrets.DESKTOP_24_APIKEY }}/"                  snap/snapcraft.yaml
+          sed -i "s/serial-vault-partners.canonical.com/${{ secrets.SERIAL_VAULT_URL }}/" snap/hooks/prepare-device
+      - name: Build
+        uses: canonical/action-build@v1
+        with:
+          build-info: true
+          snapcraft-channel: 8.x/stable
+          ua-token: ${{ secrets.UA_TOKEN }}
+        id: build
+      - name: Publish
+        uses: canonical/action-publish@v1
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_LOGIN }}
+        with:
+          snap: ${{ steps.build.outputs.snap }}
+          release: 24-desktop/edge
+          # Uploading may fail because gadgets require review, which is fine
+          continue-on-error: true
+
+  # Core builds
+  # build_22:
+  #   name: Build job for the Core 22 gadget snap
+  #   runs-on: ubuntu-22.04
+  #   outputs:
+  #     snap-file: ${{ steps.build.outputs.snap }}
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #       with:
+  #         ref: 22
+  #     - name: Prep env
+  #       run: |
+  #         sed -i "s/LANDSCAPE_NAME/${{ secrets.LANDSCAPE_NAME }}/"                        gadget.yaml
+  #         sed -i "s/name: pc/name: ${{ secrets.REGISTERED_NAME }}/"                       snap/snapcraft.yaml
+  #         sed -i "s/22-APIKEY/${{ secrets.22_APIKEY }}/"                                  snap/snapcraft.yaml
+  #         sed -i "s/serial-vault-partners.canonical.com/${{ secrets.SERIAL_VAULT_URL }}/" snap/hooks/prepare-device
+  #     - name: Build
+  #       uses: canonical/action-build@v1
+  #       with:
+  #         build-info: true
+  #         snapcraft-channel: 7.x/stable
+  #         ua-token: ${{ secrets.UA_TOKEN }}
+  #       id: build
+  #     - name: Publish
+  #       uses: canonical/action-publish@v1
+  #       env:
+  #         SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_LOGIN }}
+  #       with:
+  #         snap: ${{ steps.build.outputs.snap }}
+  #         release: 22/edge
+  #         # Uploading may fail because gadgets require review, which is fine
+  #         continue-on-error: true
+
+  # build_24:
+  #   name: Build job for the Core 24 gadget snap
+  #   runs-on: ubuntu-24.04
+  #   outputs:
+  #     snap-file: ${{ steps.build.outputs.snap }}
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #       with:
+  #         ref: 24
+  #     - name: Prep env
+  #       run: |
+  #         sed -i "s/LANDSCAPE_NAME/${{ secrets.LANDSCAPE_NAME }}/"                        gadget.yaml
+  #         sed -i "s/name: pc/name: ${{ secrets.REGISTERED_NAME }}/"                       snap/snapcraft.yaml
+  #         sed -i "s/24-APIKEY/${{ secrets.24_APIKEY }}/"                                  snap/snapcraft.yaml
+  #         sed -i "s/serial-vault-partners.canonical.com/${{ secrets.SERIAL_VAULT_URL }}/" snap/hooks/prepare-device
+  #     - name: Build
+  #       uses: canonical/action-build@v1
+  #       with:
+  #         build-info: true
+  #         snapcraft-channel: 8.x/stable
+  #         ua-token: ${{ secrets.UA_TOKEN }}
+  #       id: build
+  #     - name: Publish
+  #       uses: canonical/action-publish@v1
+  #       env:
+  #         SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_LOGIN }}
+  #       with:
+  #         snap: ${{ steps.build.outputs.snap }}
+  #         release: 24/edge
+  #         # Uploading may fail because gadgets require review, which is fine
+  #         continue-on-error: true
