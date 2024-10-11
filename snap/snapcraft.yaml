@@ -77,4 +77,4 @@ parts:
 hooks:
   prepare-device:
     environment:
-      MODEL_APIKEY: APIKEY_STANDIN
+      MODEL_APIKEY: 22-classic-APIKEY
