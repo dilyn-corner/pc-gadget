@@ -28,7 +28,11 @@ jobs:
         with:
           build-info: true
           snapcraft-channel: 7.x/stable
-          ua-token: ${{ secrets.UA_TOKEN }}
+        env:
+          # Using with.ua-token is broken for core24 base snaps as the
+          # --ua-token flag has been removed; only the environment variable is
+          # respected. See: https://github.com/canonical/snapcraft/issues/4874
+          SNAPCRAFT_UA_TOKEN: ${{ secrets.UA_TOKEN }}
         id: build
       - name: Publish
         uses: canonical/action-publish@v1
@@ -62,7 +66,11 @@ jobs:
         with:
           build-info: true
           snapcraft-channel: 8.x/stable
-          ua-token: ${{ secrets.UA_TOKEN }}
+        env:
+          # Using with.ua-token is broken for core24 base snaps as the
+          # --ua-token flag has been removed; only the environment variable is
+          # respected. See: https://github.com/canonical/snapcraft/issues/4874
+          SNAPCRAFT_UA_TOKEN: ${{ secrets.UA_TOKEN }}
         id: build
       - name: Publish
         uses: canonical/action-publish@v1
@@ -96,7 +104,11 @@ jobs:
   #       with:
   #         build-info: true
   #         snapcraft-channel: 7.x/stable
-  #         ua-token: ${{ secrets.UA_TOKEN }}
+  #       env:
+  #         # Using with.ua-token is broken for core24 base snaps as the
+  #         # --ua-token flag has been removed; only the environment variable is
+  #         # respected. See: https://github.com/canonical/snapcraft/issues/4874
+  #         SNAPCRAFT_UA_TOKEN: ${{ secrets.UA_TOKEN }}
   #       id: build
   #     - name: Publish
   #       uses: canonical/action-publish@v1
@@ -129,7 +141,11 @@ jobs:
   #       with:
   #         build-info: true
   #         snapcraft-channel: 8.x/stable
-  #         ua-token: ${{ secrets.UA_TOKEN }}
+  #       env:
+  #         # Using with.ua-token is broken for core24 base snaps as the
+  #         # --ua-token flag has been removed; only the environment variable is
+  #         # respected. See: https://github.com/canonical/snapcraft/issues/4874
+  #         SNAPCRAFT_UA_TOKEN: ${{ secrets.UA_TOKEN }}
   #       id: build
   #     - name: Publish
   #       uses: canonical/action-publish@v1
