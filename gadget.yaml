@@ -69,7 +69,7 @@ defaults:
     landscape-url: "https://landscape.canonical.com"
     auto-register:
       enabled: true
-      computer-title-pattern: ${model}-${serial}
+      computer-title-pattern: ${model}${serial}
       wait-for-serial-as: true
 
 # A lot of interface autoconnections are required
