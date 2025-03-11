@@ -28,7 +28,7 @@ license: "CC-BY-SA-4.0 AND GPL-3.0-or-later"
 
 # Min version to support shim 15.7 and min-size
 assumes:
-  - snapd2.60.1
+  - snapd2.63
 
 parts:
   mbr:
