@@ -120,39 +120,40 @@ jobs:
   #         # Uploading may fail because gadgets require review, which is fine
   #         continue-on-error: true
 
-  # build_24:
-  #   name: Build job for the Core 24 gadget snap
-  #   runs-on: ubuntu-24.04
-  #   outputs:
-  #     snap-file: ${{ steps.build.outputs.snap }}
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v3
-  #       with:
-  #         ref: 24
-  #     - name: Prep env
-  #       run: |
-  #         sed -i "s/LANDSCAPE_NAME/${{ secrets.LANDSCAPE_NAME }}/"                        gadget.yaml
-  #         sed -i "s/name: pc/name: ${{ secrets.REGISTERED_NAME }}/"                       snap/snapcraft.yaml
-  #         sed -i "s/24-APIKEY/${{ secrets.24_APIKEY }}/"                                  snap/snapcraft.yaml
-  #         sed -i "s/serial-vault-partners.canonical.com/${{ secrets.SERIAL_VAULT_URL }}/" snap/hooks/prepare-device
-  #     - name: Build
-  #       uses: canonical/action-build@v1
-  #       with:
-  #         build-info: true
-  #         snapcraft-channel: 8.x/stable
-  #       env:
-  #         # Using with.ua-token is broken for core24 base snaps as the
-  #         # --ua-token flag has been removed; only the environment variable is
-  #         # respected. See: https://github.com/canonical/snapcraft/issues/4874
-  #         SNAPCRAFT_UA_TOKEN: ${{ secrets.UA_TOKEN }}
-  #       id: build
-  #     - name: Publish
-  #       uses: canonical/action-publish@v1
-  #       env:
-  #         SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_LOGIN }}
-  #       with:
-  #         snap: ${{ steps.build.outputs.snap }}
-  #         release: 24/edge
-  #         # Uploading may fail because gadgets require review, which is fine
-  #         continue-on-error: true
+  build_24:
+    name: Build job for the Core 24 gadget snap
+    runs-on: ubuntu-24.04
+    outputs:
+      snap-file: ${{ steps.build.outputs.snap }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: 24
+      - name: Prep env
+        run: |
+          sed -i -e "s/name: pc/name: ${{ secrets.REGISTERED_NAME }}/"  \
+                 -e "s/NAS_APIKEY/${{ secrets.NAS_APIKEY }}/"                             snap/snapcraft.yaml
+          sed -i -e "s/LANDSCAPE_NAME/${{ secrets.LANDSCAPE_NAME }}/"   \
+                 -e "s/PORKBUN_API_KEY/${{ secrets.PORKBUN_API_KEY }}/" \
+                 -e "s/PORKBUN_API_SECRET_KEY/${{ secrets.PORKBUN_API_SECRET_KEY }}/"     gadget.yaml
+      - name: Build
+        uses: canonical/action-build@v1
+        with:
+          build-info: true
+          snapcraft-channel: 8.x/stable
+        env:
+          # Using with.ua-token is broken for core24 base snaps as the
+          # --ua-token flag has been removed; only the environment variable is
+          # respected. See: https://github.com/canonical/snapcraft/issues/4874
+          SNAPCRAFT_UA_TOKEN: ${{ secrets.UA_TOKEN }}
+        id: build
+      - name: Publish
+        uses: canonical/action-publish@v1
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_LOGIN }}
+        with:
+          snap: ${{ steps.build.outputs.snap }}
+          release: 24/edge
+          # Uploading may fail because gadgets require review, which is fine
+          continue-on-error: true
