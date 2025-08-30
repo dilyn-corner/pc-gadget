@@ -17,7 +17,7 @@ grade: stable
 hooks:
   prepare-device:
     environment:
-      MODEL_APIKEY: "24-APIKEY"
+      MODEL_APIKEY: "NAS_APIKEY"
 
 # Min version to support shim 15.7
 assumes:
