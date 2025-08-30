@@ -2,12 +2,17 @@ name: pc
 adopt-info: boot-assets
 type: gadget
 base: core24
+icon: snap/gui/icon.png
+license: "CC-BY-SA-4.0 AND GPL-3.0-or-later"
+website: https://gnu.org/software/grub
+contact: dilyn.corner@tutanota.com
+issues: https://github.com/dilyn-corner/pc-gadget/issues
+source-code: https://github.com/dilyn-corner/pc-gadget
 summary: PC gadget for generic devices
 description: |
     This gadget enables generic pc devices to work with Ubuntu Core
 confinement: strict
 grade: stable
-icon: icon.png
 
 hooks:
   prepare-device:
@@ -22,6 +27,7 @@ parts:
   mbr:
     source: legacy-bios
     plugin: make
+
   boot-assets:
     plugin: nil
     build-packages:
