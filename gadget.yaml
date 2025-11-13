@@ -20,7 +20,7 @@ volumes:
         size: 1M
         offset: 1M
         update:
-          edition: 1
+          edition: 2
       - name: ubuntu-seed
         role: system-seed
         filesystem: vfat
@@ -28,9 +28,9 @@ volumes:
         type: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
         # It isn't obvious how big the seed might be, but we have plenty of disk
         # space to work with on the target that this is a reasonable default.
-        size: 5G
+        size: 1200M
         update:
-          edition: 1
+          edition: 3
         content:
           - source: grubx64.efi
             target: EFI/ubuntu/grubx64.efi
@@ -58,17 +58,58 @@ volumes:
         role: system-save
         filesystem: ext4
         type: 0FC63DAF-8483-4772-8E79-3D69D8477DE4
-        min-size: 32M
-        # It's unclear if we ever plan on using the save partition but just in
-        # case, make it large
-        size: 1G
+        min-size: 16M
+        size: 32M
       - name: ubuntu-data
         role: system-data
         filesystem: ext4
         type: 0FC63DAF-8483-4772-8E79-3D69D8477DE4
-        size: 1M
+        size: 1G
 
+kernel-cmdline:
+  # Kernel commandline allow list.
+  allow:
+    # Enable and use zswap
+    # https://docs.kernel.org/admin-guide/mm/zswap.html
+    - zswap.enabled=1
+    - zswap.compressor=lz4
+    - zswap.max_pool_percent=20
+    # Disable pressure stall information, turns off kernel resource-pressure
+    # accounting.
+    - psi=0
+    # Enable automatic PCI bridge resource allocation.
+    # Optional, covers UEFI implementation gaps.
+    # https://www.kernel.org/doc/Documentation/admin-guide/kernel-parameters.txt
+    - pci=realloc=on
+    # Disable USB suspend. Useful when we have USB peripherals we want to
+    # guarantee are available.
+    - usbcore.autosuspend=-1
+    # Relaxes ACPI resource claiming enforcement; now reservations may overlap.
+    - acpi_enforce_resources=lax
+    - acpi_backlight=vendor
+    # Use the CPU's clocksource directly.
+    # https://github.com/torvalds/linux/blob/master/kernel/time/clocksource.c
+    # https://docs.kernel.org/admin-guide/kernel-parameters.html
+    - clocksource=tsc
+    # Blacklists the ACPI P-state driver. Use this when you are using your
+    # silicon-specific P-state driver.
+    - initcall_blacklist=acpi_cpufreq_init
+    # Puts IOMMU into passthrough mode to disable DMA translation for maximum
+    # performance. The kernel will judge when this should happen, this option
+    # just turns on the possibility.
+    - iommu=pt
+    # Force IOMMU (AMD-Vi) for DMA protection and device isolation.
+    - amd_iommu=on
+    # Enables shared memory mode when using the AMD P-state driver.
+    - amd_pstate.shared_mem=1
+    # Select the guidance mode for the AMD P-state driver.
+    - amd_pstate=guided
+    # Enable bootcharting on Ubuntu Core.
+    - core.bootchart
+
+# Default snap configuration
 defaults:
+  # landscape-client
   ffnH0sJpX3NFAclH777M8BdXIWpo93af:
     account-name: LANDSCAPE_NAME
     landscape-url: "https://landscape.canonical.com"
@@ -76,6 +117,7 @@ defaults:
       enabled: true
       computer-title-pattern: ${model}-${serial}
       wait-for-serial-as: true
+  # caddy
   zrzDNQtnyUahziRvlXnRX6eRvus25JZk:
     config:
       apps:
@@ -176,4 +218,3 @@ defaults:
                   - "git.dilyn.cc"
                   - "immich.dilyn.cc"
                   - "jellyfin.dilyn.cc"
-    modified: false
