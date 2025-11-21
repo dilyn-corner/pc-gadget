@@ -54,6 +54,11 @@ volumes:
         # This will be automatically resized to fill the rest of the disk anyways.
         size: 1M
 
+connections:
+  - plug: yValkNjy9WPIq8nUOB3VXGew2CP2Tgsj:removable-media
+  - plug: ISHUD4ohMh9Ih45FXcYkLYkRvKpkfNRl:removable-media
+  - plug: vgDIAs3PXlWFvI9QfSH9J9FmBP7grCQp:removable-media
+
 # Some optimal commandline flags for AMD and other choices
 kernel-cmdline:
   # Kernel commandline allow list.
