@@ -119,6 +119,14 @@ kernel-cmdline:
 
 # Default snap configuration
 defaults:
+  # dilyn-immich
+  ISHUD4ohMh9Ih45FXcYkLYkRvKpkfNRl:
+    host: 127.0.0.1
+    location:
+      media: /media/vault/pictures/immich
+      upload: /media/vault/picturers/immich/upload
+    ml:
+      enabled: true
   # landscape-client
   ffnH0sJpX3NFAclH777M8BdXIWpo93af:
     account-name: LANDSCAPE_NAME
