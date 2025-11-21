@@ -10,7 +10,8 @@ exec >> $SNAP_COMMON/prepare-device-hook.log 2>&1
 
 # If you are forking and building your own gadget:
 # implement your preferred way of generating a serial number for this device here
-snapctl set registration.proposed-serial="\"$(date -u)\""
+snapctl set registration.proposed-serial="\"$(dmidecode -s system-uuid)\""
 
-snapctl set device-service.url="https://serial-vault-partners.canonical.com/v1/"
+# Use the new model service instead of the serial vault.
+snapctl set device-service.url="https://api.snapcraft.io/v1/"
 snapctl set device-service.headers="{\"api-key\": \"$MODEL_APIKEY\"}"
