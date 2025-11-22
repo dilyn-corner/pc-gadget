@@ -40,4 +40,5 @@ parts:
       - grub.conf
       - grubx64.efi
       - shim.efi.signed
+      - usr/sbin/dmidecode
       - usr/share/doc/
